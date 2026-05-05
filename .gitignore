@@ -1,0 +1,8 @@
+# STM32CubeProgrammer (proprietary software - download from st.com)
+stm32cubeprg-win64-v2-21-0/
+stm32cubeprg-win64*/
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
