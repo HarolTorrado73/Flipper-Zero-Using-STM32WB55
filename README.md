@@ -60,11 +60,38 @@ For firmware updates and device management.
 
 ### Step 2: Enter Boot Mode and Connect
 
-1. Open **STM32CubeProgrammer**
-2. On the STM32WB55 board, **press and hold the BOOT button**
-3. While holding BOOT, **connect the board to your PC via USB**
-4. Open **Device Manager** (Win + X > Device Manager) and verify the device appears correctly
-5. In STM32CubeProgrammer, select the USB connection and click **Connect**
+1. On the STM32WB55 board, **press and hold the BOOT button**
+2. While holding BOOT, **connect the board to your PC via USB**
+3. Open **Device Manager** (Win + X > Device Manager) and verify the device appears correctly under USB devices
+4. Open **STM32CubeProgrammer**
+5. Click the **blue dropdown button** (top-left corner) and select **USB**
+6. In the **Port** section below, click the **refresh button** (next to the port field) to detect the device
+7. Click **Connect** (next to the blue USB button)
+
+### Step 3: Flash First OTP
+
+1. Once connected, click the **download icon** (on the left sidebar, or the "Erasing & Programming" section)
+2. In **File Path**, browse and select: `DIY Flipper/OTP/First_otp.bin`
+3. In **Start Address**, enter: `0x1FFF7000`
+4. Click **Start Programming**
+5. Wait for the confirmation message
+
+### Step 4: Flash Second OTP
+
+1. In the same programming section, change the **File Path** to: `DIY Flipper/OTP/Second OTP.bin`
+2. In **Start Address**, change to: `0x1FFF7010`
+3. Click **Start Programming**
+4. Wait for the confirmation message
+
+### Step 5: Install Firmware with qFlipper
+
+1. **Disconnect** the STM32WB55 board from USB
+2. **Press and hold the BOOT button** on the board
+3. While holding BOOT, **reconnect the board to USB**
+4. Open the **qFlipper** application
+5. Wait for qFlipper to recognize the controller
+6. Click **Repair** in qFlipper
+7. Wait for the firmware to download and install
 
 > More steps coming soon...
 
