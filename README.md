@@ -93,6 +93,34 @@ For firmware updates and device management.
 6. Click **Repair** in qFlipper
 7. Wait for the firmware to download and install
 
+### Step 6: Install Custom Firmware (Momentum)
+
+1. Once the repair finishes, click **Install from file** (at the bottom of the Repair button)
+2. Browse and select: `DIY Flipper/Firmware/flipper-z-f7-full-mntm-momentum-75bfde09.dfu`
+3. Wait for the installation to complete
+4. When the **Continue** button appears, click it
+5. **Disconnect** the controller from USB
+
+### Step 7: Prepare the Micro SD Card
+
+1. Insert the **Micro SD card** into your computer (using an adapter if needed)
+2. **Format** the SD card as **FAT32**
+3. Copy the entire contents of `DIY Flipper/SD Card/` to the root of the Micro SD card
+4. Safely eject the SD card from your computer
+
+### Step 8: Connect the Micro SD Module to the STM32WB55
+
+Wire the Micro SD module to the STM32WB55 as follows:
+
+| SD Module Pin | STM32WB55 Pin |
+|---------------|---------------|
+| VCC           | 3.3V          |
+| CS            | PA4           |
+| MOSI          | PB5           |
+| SCK           | PB3           |
+| MISO          | PB4           |
+| GND           | GND           |
+
 > More steps coming soon...
 
 ---
