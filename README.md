@@ -4,6 +4,12 @@ A cheap and affordable alternative to the original Flipper Zero, built from scra
 
 This project is built for **learning and educational purposes**, focusing on embedded systems, RF modules, and custom firmware installation. I cover the hardware setup, OTP configuration, and firmware installation process step by step.
 
+<div align="center">
+  <img src="img/preview.png" alt="DIY Flipper Zero - Final Result" width="600"/>
+  <br/>
+  <em>DIY Flipper Zero — Hacker Multi-tool built with STM32WB55</em>
+</div>
+
 ---
 
 ## Hardware Used
@@ -16,15 +22,6 @@ This project is built for **learning and educational purposes**, focusing on emb
 | Micro SD Card Module | External storage for apps and assets |
 | Push Buttons (x6) | User input controls |
 | Li-ion Battery | Rechargeable power source |
-
-## 3D Printed Case
-
-The `stl/` folder contains the 3D models for the enclosure:
-- `BASE.stl` -- Base of the case
-- `avanze1.stl` -- Front panel
-- `avanze2-con-logo.stl` -- Front panel with logo
-- `logo-kintrax.stl` -- Custom logo
-- `Untitled.stl` -- Additional part
 
 ---
 
@@ -121,7 +118,122 @@ Wire the Micro SD module to the STM32WB55 as follows:
 | MISO          | PB4           |
 | GND           | GND           |
 
-> More steps coming soon...
+### Step 9: Verify SD Card in qFlipper
+
+1. Connect the STM32WB55 board to your computer via USB
+2. Open **qFlipper** -- you should see **"SD Card 99% FREE"** displayed
+3. This confirms the Micro SD module is wired correctly and the SD card contents are recognized
+4. **Disconnect** the board from USB before continuing with the next connections
+
+### Step 10: Connect the ST7565 LCD Display
+
+Wire the 1.4" 128x64 ST7565 LCD (12864COG) to the STM32WB55:
+
+| LCD Pin | Function                  | STM32WB55 Pin |
+|---------|---------------------------|---------------|
+| 1 CSB   | Enable signal (active low)| PB2           |
+| 2 RSTB  | Reset (low level)         | PB0           |
+| 3 A0/RS | Data/instruction select   | PB1           |
+| 4 SCLK  | Serial clock              | PB3           |
+| 5 SDA   | Serial data               | PB5           |
+| 6 VDD   | Power supply +3.3V        | 3.3V          |
+| 7 VSS   | Ground                    | GND           |
+| 8 LEDA  | Backlight positive        | 3.3V          |
+
+Once connected and powered, the Flipper interface should appear on the display.
+
+### Step 11: Connect the Buttons (Controls)
+
+6 buttons total: 5 arranged in a **D-pad cross** + 1 **Back** button.
+
+```
+          ┌─────┐
+          │ UP  │
+          │ PB8 │
+          └──┬──┘
+   ┌─────┐┌─┴───┐┌─────┐
+   │LEFT ││ OK  ││RIGHT│
+   │ PB7 ││ PH3 ││ PA6 │
+   └─────┘└─┬───┘└─────┘
+          ┌──┴──┐
+          │DOWN │          ┌──────┐
+          │ PA5 │          │ BACK │
+          └─────┘          │ PA10 │
+                           └──────┘
+```
+
+| Button | STM32WB55 Pin |
+|--------|---------------|
+| Up     | PB8           |
+| OK     | PH3           |
+| Left   | PB7           |
+| Right  | PA6           |
+| Down   | PA5           |
+| Back   | PA10          |
+
+All buttons share a common connection to **GND**.
+
+### Step 12: Portable Power Supply
+
+To make the device portable (independent from computer power), you need:
+
+- **Li-Po battery** 3.7V
+- **TP4056 charge module** (or similar)
+- **Power switch**
+- **MT3608** DC-DC boost converter
+
+**Wiring chain:**
+
+```
+Li-Po 3.7V → Charge Module → Switch → MT3608 (adjusted to ~5.1V out) → STM32 5V pin
+                                                                       → STM32 GND
+```
+
+1. Connect the **Li-Po battery** to the **charge module** input
+2. Route the charge module output through a **power switch**
+3. Connect the switch output to the **MT3608** boost converter input
+4. **Adjust the MT3608** output to approximately **5.1V** (using the onboard potentiometer)
+5. Connect the MT3608 output to the **5V pin** on the STM32WB55
+6. Connect **GND** from the MT3608 to **GND** on the STM32WB55
+
+### Step 13: Connect the CC1101 Sub-GHz Module
+
+Wire the CC1101 RF module to the STM32WB55:
+
+| CC1101 Pin | Function | STM32WB55 Pin |
+|------------|----------|---------------|
+| Pin 1      | GND      | GND           |
+| Pin 2      | VCC      | 3.3V          |
+| Pin 3      | GDO0     | PA1           |
+| Pin 4      | CSN      | PA7           |
+| Pin 5      | SCK      | PB3           |
+| Pin 6      | MOSI     | PB5           |
+| Pin 7      | MISO     | PB4           |
+
+---
+
+## Full Pinout Summary
+
+| STM32WB55 Pin | Connected To          |
+|---------------|-----------------------|
+| PA1           | CC1101 Pin 3 (GDO0)  |
+| PA4           | SD Module CS          |
+| PA5           | Button Down           |
+| PA6           | Button Right          |
+| PA7           | CC1101 Pin 4 (CSN)   |
+| PA10          | Button Back           |
+| PB0           | LCD RSTB              |
+| PB1           | LCD A0/RS             |
+| PB2           | LCD CSB               |
+| PB3           | LCD SCLK / SD SCK / CC1101 SCK |
+| PB4           | SD MISO / CC1101 MISO|
+| PB5           | LCD SDA / SD MOSI / CC1101 MOSI |
+| PB7           | Button Left           |
+| PB8           | Button Up             |
+| PH3           | Button OK             |
+| 3.3V          | LCD VDD, LCD LEDA, SD VCC, CC1101 VCC |
+| 5V            | MT3608 output         |
+| GND           | All modules GND, all buttons GND |
 
 ---
 
@@ -133,7 +245,7 @@ stm/
 │   ├── Firmware/          # Flipper firmware (.dfu)
 │   ├── OTP/               # OTP binary files and addresses
 │   └── SD Card/           # SD card contents (apps, assets, configs)
-├── stl/                   # 3D printable case models
+├── img/                   # Project images
 ├── .gitignore
 └── README.md
 ```

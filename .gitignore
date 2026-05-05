@@ -2,6 +2,9 @@
 stm32cubeprg-win64-v2-21-0/
 stm32cubeprg-win64*/
 
+# 3D models (paid designs - not included in repo)
+stl/
+
 # OS files
 Thumbs.db
 .DS_Store
